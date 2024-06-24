@@ -1,0 +1,35 @@
+/*
+ * stm32f429.h
+ *
+ *  Created on: Jun 22, 2024
+ *      Author: Brian Wu
+ * MCU Specific Header File used for defining
+ * memory addresses, peripheral addresses, and other
+ * macros that correspond to the STM32F429XX MCUs.
+ */
+
+#ifndef INC_STM32F429_H_
+#define INC_STM32F429_H_
+
+/*
+ * Size of SRAM and Flash for STM32F429XX
+ */
+
+#define SRAM1_SIZE			( (112)* (1024) )
+#define SRAM2_SIZE			( (16) * (1024) )
+#define SRAM3_SIZE			( (64) * (1024) )
+#define FLASH_SIZE			( (2) * (1024) )
+#define ROM_SIZE			( (30) * (1024))
+/*
+ * Base addresses for SRAM and FLASH Memory
+ */
+
+#define	SRAM1_BASE_ADDR		0x20000000U
+#define	SRAM2_BASE_ADDR		SRAM1_BASE_ADDR + SRAM1_SIZE
+#define SRAM3_BASE_ADDR		0x20020000U
+#define	FLASH_BASE_ADDR		0x08000000U
+#define	ROM_BASE_ADDR		0x1FFF0000U // System Memory
+#define
+
+
+#endif /* INC_STM32F429_H_ */
