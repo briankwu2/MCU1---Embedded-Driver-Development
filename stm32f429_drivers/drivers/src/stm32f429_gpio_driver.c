@@ -135,8 +135,8 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
         // Calculate the position of the pin's register
         uint32_t AFRIndex = pinNumber / 8;
         uint32_t AFROffset = 4 * (pinNumber % 8); // "4 *" as each pin takes 4 bits
-        uint32_t AFRValue = pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFunMode;
-        temp = AFRValue << AFROffset;
+        uint32_t AFRvalue = pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFunMode;
+        temp = AFRvalue << AFROffset;
         pGPIOHandle->pGPIOx->AFR[AFRIndex] &= ~(0x3 << pinNumber); // Resets
         pGPIOHandle->pGPIOx->AFR[AFRIndex] |= temp;
     }
@@ -209,26 +209,54 @@ uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx) {
  * 
  * @param pGPIOx - Address of the GPIOx Port
  * @param pinNumber - The specific pin number of the GPIOx port
- * @param Value - The bit to be written on that pin
+ * @param value - The bit to be written on that pin
  */
-void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t Value);
+void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t value) {
+    if (value == GPIO_PIN_SET) {
+        pGPIOx->ODR |= (1 << pinNumber);
+    } else {
+        pGPIOx->ODR &= ~(1 << pinNumber);
+    }
+
+}
+
 
 /**
  * @brief Writes to the whole GPIOx Output Port Register
  * 
  * @param pGPIOx - Address of the GPIOx Port
- * @param Value - 16 bit value to be written to the register
+ * @param value - 16 bit value to be written to the register
  */
-void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
+void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t value) {
+    pGPIOx->ODR = value;
+}
 
 
 /**
- * @brief Toggles on the output mode for a specific pin for a GPIOx port
+ * @brief Toggles an output pin for a specific pin for a GPIOx port
  * 
  * @param pGPIOx - Address of the GPIOx Port
  * @param pinNumber - Specific pin of the GPIOx Port
  */
-void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
+void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber) {
+    /*
+        How XOR'ing Works
+        A = 0b1010
+        Want to toggle the 2nd bit of A
+        End result -> 0b1000 (turns 1 into 0)
+        Logic is, if 2nd bit == 1, then turn to 0
+                  if 2nd bit == 0, then turn to 1
+        1010 ^ 0010
+        Any bit encountered with a 0 will stay the same!
+        (given that left bit is the original number and right is the flag to toggle)
+        1 ^ 0 = 1
+        0 ^ 0 = 0
+        However any bit encountered with a 1 will toggle
+        1 ^ 1 = 0
+        1 ^ 0 = 1
+    */
+    pGPIOx->ODR ^= (1 << pinNumber); // Toggles the (pinNumber)th bit on the ODR
+}
 
 /**************************************************************************************************
  *	IRQ Config and ISR Handling

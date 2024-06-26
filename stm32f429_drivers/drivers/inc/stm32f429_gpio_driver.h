@@ -15,11 +15,11 @@
 
 typedef struct {
 	uint8_t	GPIO_pinNumber;
-	uint8_t	GPIO_PinMode; 		// Possible Values from @GPIO_PIN_MODES
-	uint8_t	GPIO_PinSpeed;		// Possible Values from @GPIO_OUTPUT_SPEEDS
-	uint8_t	GPIO_PinPuPdControl;// Possible Values from @GPIO_PUPD_MODES
-	uint8_t	GPIO_PinOPType;		// Possible Values from @GPIO_OUTPUT_MODES
-	uint8_t	GPIO_PinAltFunMode;	// Possible Values from
+	uint8_t	GPIO_PinMode; 		// Possible values from @GPIO_PIN_MODES
+	uint8_t	GPIO_PinSpeed;		// Possible values from @GPIO_OUTPUT_SPEEDS
+	uint8_t	GPIO_PinPuPdControl;// Possible values from @GPIO_PUPD_MODES
+	uint8_t	GPIO_PinOPType;		// Possible values from @GPIO_OUTPUT_MODES
+	uint8_t	GPIO_PinAltFunMode;	// Possible values from
 } GPIO_PinConfig_t;
 
 /*
@@ -47,7 +47,7 @@ typedef struct {
 #define GPIO_PIN_NO_8		8	
 #define GPIO_PIN_NO_9		9	
 #define GPIO_PIN_NO_10		10	
-#define GPIO_PIN_NO_11		11	2
+#define GPIO_PIN_NO_11		11
 #define GPIO_PIN_NO_12		12	
 #define GPIO_PIN_NO_13		13	
 #define GPIO_PIN_NO_14		14	
@@ -110,15 +110,14 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx);
  */
 uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
 uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
-void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t Value);
-void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
+void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t value);
+void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t value);
 void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
 /*
  *	IRQ Config and ISR Handling
  */
 void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnOrDI);
 void GPIO_IRQHandling(uint8_t pinNumber);
-
 
 
 #endif /* INC_STM32F429_GPIO_DRIVER_H_ */
