@@ -84,10 +84,10 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
     if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) {
 
         // Changed for better readability
-        // temp = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber)
+        // temp = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber)
 
         uint32_t pinMode = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode;
-        uint32_t pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber;
+        uint32_t pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber;
 
         // "2 *" is for the 2 bits per pin used to set the mods
         temp = pinMode << (2 * pinNumber); // Shifts the pinMode to apply to the correct pin. 
@@ -105,7 +105,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
     //2. Configure the Speed
     uint32_t pinSpeed = pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed;
-    pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber;
+    pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber;
     // "2 *" is for the 2 bits per pin used to set the mods
     temp = pinSpeed << (2 * pinNumber); // Shifts the pinMode to apply to the correct pin. 
     pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3 << pinNumber); // Resets
@@ -123,7 +123,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
     //4. Configure the Output Type
     uint32_t pinOPType = pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType;
-    temp = pinOPType << pinNumber; // Shifts the pinMode to apply to the correct pin.
+    temp = pinPUPD << pinNumber; // Shifts the pinMode to apply to the correct pin. 
     pGPIOHandle->pGPIOx->OTYPER &= ~(0x3 << pinNumber); // Resets
     pGPIOHandle->pGPIOx->OTYPER |= temp; // Set the real register
     temp = 0;
@@ -148,31 +148,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
  * 
  * @param pGPIOx Address to the GPIO Peripheral
  */
-void GPIO_DeInit(GPIO_RegDef_t *pGPIOx) {
-    if (pGPIOx == GPIOA) {
-        GPIOA_P_CLK_EN();
-    } else if (pGPIOx == GPIOB) {
-        GPIOB_P_CLK_EN();
-    } else if (pGPIOx == GPIOC) {
-        GPIOC_P_CLK_EN();
-    } else if (pGPIOx == GPIOD) {
-        GPIOD_P_CLK_EN();
-    } else if (pGPIOx == GPIOE) {
-        GPIOE_P_CLK_EN();
-    } else if (pGPIOx == GPIOF) {
-        GPIOF_P_CLK_EN();
-    } else if (pGPIOx == GPIOG) {
-        GPIOG_P_CLK_EN();
-    } else if (pGPIOx == GPIOH) {
-        GPIOH_P_CLK_EN();
-    } else if (pGPIOx == GPIOI) {
-        GPIOI_P_CLK_EN();
-    } else if (pGPIOx == GPIOJ) {
-        GPIOJ_P_CLK_EN();
-    } else if (pGPIOx == GPIOK) {
-        GPIOK_P_CLK_EN();
-    }
-}
+void GPIO_DeInit(GPIO_RegDef_t *pGPIOx);
 
 
 /********************************************************************************************************
@@ -183,14 +159,10 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx) {
  * @brief Reads from the GPIO input pin specified
  * 
  * @param pGPIOx - Address to the GPIO Peripheral
- * @param pinNumber - Pin to read
+ * @param PinNumber - Pin to read
  * @return uint8_t - Returns a bit from the pin 
  */
-uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber) {
-    uint8_t value;
-    value = (uint8_t) ((pGPIOx->IDR >> pinNumber) & 0x00000001); // Gets the (pinNumber)'th data bit from the IDR
-    return value;
-}
+uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
 
 /**
  * @brief Reads from the GPIO Input Port (all 16 bits at once)
@@ -198,20 +170,17 @@ uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber) {
  * @param pGPIOx - Address to the GPIO Peripheral 
  * @return uint16_t - Returns the 16 bit wide register for all 16 pins
  */
-uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx) {
-    uint16_t value;
-    value = (uint16_t) (pGPIOx->IDR); // Gets the whole port
-    return value;
-}
+uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx);
+
 
 /**
  * @brief Writes to the GPIO output pin specified
  * 
  * @param pGPIOx - Address of the GPIOx Port
- * @param pinNumber - The specific pin number of the GPIOx port
+ * @param PinNumber - The specific pin number of the GPIOx port
  * @param Value - The bit to be written on that pin
  */
-void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber, uint8_t Value);
+void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value);
 
 /**
  * @brief Writes to the whole GPIOx Output Port Register
@@ -226,9 +195,9 @@ void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint16_t Value);
  * @brief Toggles on the output mode for a specific pin for a GPIOx port
  * 
  * @param pGPIOx - Address of the GPIOx Port
- * @param pinNumber - Specific pin of the GPIOx Port
+ * @param PinNumber - Specific pin of the GPIOx Port
  */
-void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
+void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
 
 /**************************************************************************************************
  *	IRQ Config and ISR Handling
@@ -247,6 +216,6 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnOrDI);
 /**
  * @brief Specifies 
  * 
- * @param pinNumber 
+ * @param PinNumber 
  */
-void GPIO_IRQHandling(uint8_t pinNumber);
+void GPIO_IRQHandling(uint8_t PinNumber);
