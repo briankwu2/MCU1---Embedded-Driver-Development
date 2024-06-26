@@ -1,2 +1,0 @@
-../drivers/src/stm32f429_gpio_driver.c:14:6:GPIO_PeriClockControl	24
-../drivers/src/stm32f429_gpio_driver.c:78:6:GPIO_Init	3
