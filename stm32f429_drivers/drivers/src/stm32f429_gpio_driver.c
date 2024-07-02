@@ -76,18 +76,18 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnOrDI) {
  * @param pGPIOHandle - Handle of the given GPIO Peripheral with desired configurations
  */
 void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
+    // Inner enum to make some logic easier
+
     //1. Configure the Mode of the GPIO Pin
     uint32_t temp = 0; // Temp Register for holding configuration values to set to the real register
-    uint32_t pinNumber;
+    uint32_t pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber;
+    GPIO_PIN_MODE pinMode = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode;
 
     // Non-Interrupt Modes
-    if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG) {
+    if (pinMode <= GPIO_MODE_ANALOG) {
 
         // Changed for better readability
-        // temp = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber)
-
-        uint32_t pinMode = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode;
-        uint32_t pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber;
+        // temp = pinMode << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber)
 
         // "2 *" is for the 2 bits per pin used to set the mods
         temp = pinMode << (2 * pinNumber); // Shifts the pinMode to apply to the correct pin. 
@@ -100,12 +100,45 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
 
     } else { // Interrupt Modes
 
+        // 1. Configure the Edge Detection
+        /*
+            The pin number is the same as the specific EXTIx line. It is muxed, and the GPIO port is selected later
+        */
+        if (pinMode >= GPIO_MODE_ANALOG) { // If interrupt option mode
+            switch (pinMode) {
+                case GPIO_MODE_IT_FT:
+                    EXTI->FTSR |= (1 << pinNumber);
+                    EXTI->RTSR &= ~(1 << pinNumber);
+                    break;
+                case GPIO_MODE_IT_RT:
+                    EXTI->FTSR &= (1 << pinNumber);
+                    EXTI->RTSR |= ~(1 << pinNumber);
+                    break;
+                case GPIO_MODE_IT_RFT:
+                    EXTI->FTSR |= (1 << pinNumber);
+                    EXTI->RTSR |= ~(1 << pinNumber);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        // 2. Configure the GPIO Port Selection in SYSCFG_EXTICR
+        uint8_t SYSCFGIndex = pinNumber / 4;
+        uint8_t SYSCFGOffset = pinNumber % 4;
+        uint8_t portCode = getPortCode(pGPIOHandle->pGPIOx);
+        SYSCFG_P_CLK_EN();
+
+        SYSCFG->EXTICR[SYSCFGIndex] |= portCode << SYSCFGOffset;
+
+        // 3. Enable the EXTI Interrupt Delivery using IMR
+        EXTI->IMR |= (1 << pinNumber); //
+        
 
     }
 
     //2. Configure the Speed
     uint32_t pinSpeed = pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed;
-    pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber;
     // "2 *" is for the 2 bits per pin used to set the mods
     temp = pinSpeed << (2 * pinNumber); // Shifts the pinMode to apply to the correct pin. 
     pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3 << pinNumber); // Resets
@@ -129,7 +162,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
     temp = 0;
 
     //5. Configure the Alternate Functionality
-    if (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode == GPIO_MODE_ALTFN) {
+    if (pinMode == GPIO_MODE_ALTFN) {
         // Configure the Alt Function Registers
 
         // Calculate the position of the pin's register
@@ -278,3 +311,54 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnOrDI);
  * @param pinNumber 
  */
 void GPIO_IRQHandling(uint8_t pinNumber);
+
+
+
+/**
+ * @brief Helper Functions
+ * 
+ */
+
+uint8_t getPortCode(GPIO_RegDef_t* pGPIOx) {
+    typedef enum {
+        PORT_GPIOA = 0,
+        PORT_GPIOB,
+        PORT_GPIOC,
+        PORT_GPIOD,
+        PORT_GPIOE,
+        PORT_GPIOF,
+        PORT_GPIOG,
+        PORT_GPIOH,
+        PORT_GPIOI,
+        PORT_GPIOJ,
+        PORT_GPIOK
+    } GPIO_PORT;
+
+    GPIO_PORT portCode;
+
+    if (pGPIOx == GPIOA) { 
+        portCode = PORT_GPIOA;
+    } else if (pGPIOx == GPIOB) {
+        portCode = PORT_GPIOB;
+    } else if (pGPIOx == GPIOC) {
+        portCode = PORT_GPIOC;
+    } else if (pGPIOx == GPIOD) {
+        portCode = PORT_GPIOD;
+    } else if (pGPIOx == GPIOE) {
+        portCode = PORT_GPIOE;
+    } else if (pGPIOx == GPIOF) {
+        portCode = PORT_GPIOF;
+    } else if (pGPIOx == GPIOG) {
+        portCode = PORT_GPIOG;
+    } else if (pGPIOx == GPIOH) {
+        portCode = PORT_GPIOH;
+    } else if (pGPIOx == GPIOI) {
+        portCode = PORT_GPIOI;
+    } else if (pGPIOx == GPIOJ) {
+        portCode = PORT_GPIOJ;
+    } else if (pGPIOx == GPIOK) {
+        portCode = PORT_GPIOK;
+    }
+
+    return ((uint8_t) portCode);
+}

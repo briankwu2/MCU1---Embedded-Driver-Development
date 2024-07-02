@@ -148,6 +148,23 @@ typedef struct {
 							// GPIO alternate function low register
 } GPIO_RegDef_t;
 
+typedef struct {
+	__vo uint32_t IMR;		// Interrupt Mask Register				Addr Offset: 0x00
+	__vo uint32_t EMR;		// Event Mask Register 					Addr Offset: 0x04
+	__vo uint32_t RTSR;		// Rising Trigger Selection Register 	Addr Offset: 0x08
+	__vo uint32_t FTSR;		// Fall Trigger Selection Register		Addr Offset: 0x0C
+	__vo uint32_t SWIER;	//	Software Interrupt Event Reg		Addr Offset: 0x10
+	__vo uint32_t PR;		// Pending Register 					Addr Offset: 0x14
+
+} EXTI_RegDef_t;
+
+typedef struct {
+	__vo uint32_t MEMRMP;		// Memory Remap Register				Addr Offset: 0x00
+	__vo uint32_t PMC;			// Peripheral Mode Configuration		Addr Offset: 0x04
+	__vo uint32_t EXTICR[4];	// EXTI Configuration Register			Addr Offset: 0x08
+	__vo uint32_t CMPCR;		// Compensation Cell Control Register	Addr Offset: 0x0C
+} SYSCFG_RegDef_t;
+
 /*
  * Peripheral Definitions 	(Peripheral Base Addresses typecasted to xxx_RegDef_t)
  */
@@ -165,8 +182,8 @@ typedef struct {
 #define GPIOK				((GPIO_RegDef_t *) GPIOK_BASE_ADDR)
 
 #define RCC					((RCC_RegDef_t *) RCC_BASE_ADDR)
-
-
+#define EXTI				((EXTI_RegDef_t*) EXTI_BASE_ADDR)
+#define SYSCFG 				((SYSCFG_RegDef_t*) SYSCFG_BASE_ADDR)
 
 /*
  * Clock Enable Macros for GPIOx Peripherals

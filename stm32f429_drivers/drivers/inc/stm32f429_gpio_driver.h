@@ -9,17 +9,79 @@
 #define INC_STM32F429_GPIO_DRIVER_H_
 #include "stm32f429.h"
 
+/**
+ * 
+ */
+typedef enum {
+	GPIO_PIN_NO_0,
+	GPIO_PIN_NO_1,
+	GPIO_PIN_NO_2,
+	GPIO_PIN_NO_3,	
+	GPIO_PIN_NO_4,	
+	GPIO_PIN_NO_5,	
+	GPIO_PIN_NO_6,	
+	GPIO_PIN_NO_7,	
+	GPIO_PIN_NO_8,	
+	GPIO_PIN_NO_9,	
+	GPIO_PIN_NO_10,		
+	GPIO_PIN_NO_11,	
+	GPIO_PIN_NO_12,		
+	GPIO_PIN_NO_13,		
+	GPIO_PIN_NO_14,		
+	GPIO_PIN_NO_15
+} GPIO_PIN_NUMBER;
 
+/** @GPIO_PIN_MODES 
+ * GPIO Input Possible Modes
+ * 
+ */
 
+typedef enum {
+	GPIO_MODE_IN,
+	GPIO_MODE_OUT,
+	GPIO_MODE_ALTFN,
+	GPIO_MODE_ANALOG,
+	GPIO_MODE_IT_FT,		 // Interrupt - Falling Trigger
+	GPIO_MODE_IT_RT,		 // Interrupt - Rising Trigger
+	GPIO_MODE_IT_RFT		 // Interrupt - Rising & Falling Trigger
+} GPIO_PIN_MODE;
+
+/** @GPIO_OUTPUT_MODE
+ * GPIO Output Possible Modes
+ */
+
+typedef enum {
+	GPIO_OP_TYPE_PP,	 // Push-Pull Type
+	GPIO_OP_TYPE_OD	 // Open-Drain Type
+} GPIO_OUTPUT_MODE;
+
+/** @GPIO_OUTPUT_SPEED
+ *	GPIO Pin Possible Output Speeds
+ */
+typedef enum {
+	GPIO_SPEED_LOW,
+	GPIO_SPEED_MEDIUM,	
+	GPIO_SPEED_FAST,
+	GPIO_SPEED_HIGH
+} GPIO_OUTPUT_SPEED;
+
+/** @GPIO_PUPD_MODE
+ *	GPIO Pin Pull-Up and Pull-Down Configuration Macros 
+ */
+typedef enum {
+	GPIO_NO_PUPD,		 // No Pull-Up or Pull-Down
+	GPIO_PIN_PU, 		 // Pull-Up
+	GPIO_PIN_PD			 // Pull-Down
+} GPIO_PUPD_MODE;
 
 
 typedef struct {
-	uint8_t	GPIO_pinNumber;
-	uint8_t	GPIO_PinMode; 		// Possible values from @GPIO_PIN_MODES
-	uint8_t	GPIO_PinSpeed;		// Possible values from @GPIO_OUTPUT_SPEEDS
-	uint8_t	GPIO_PinPuPdControl;// Possible values from @GPIO_PUPD_MODES
-	uint8_t	GPIO_PinOPType;		// Possible values from @GPIO_OUTPUT_MODES
-	uint8_t	GPIO_PinAltFunMode;	// Possible values from
+	GPIO_PIN_NUMBER GPIO_pinNumber;
+	GPIO_PIN_MODE GPIO_PinMode; 		// Possible values from @GPIO_PIN_MODE
+	GPIO_OUTPUT_SPEED GPIO_PinSpeed;		// Possible values from @GPIO_OUTPUT_SPEED
+	GPIO_PUPD_MODE GPIO_PinPuPdControl;// Possible values from @GPIO_PUPD_MODE
+	GPIO_OUTPUT_MODE GPIO_PinOPType;		// Possible values from @GPIO_OUTPUT_MODE
+	uint16_t GPIO_PinAltFunMode;	// Possible values from (WIP)
 } GPIO_PinConfig_t;
 
 /*
@@ -30,62 +92,6 @@ typedef struct {
 	GPIO_RegDef_t *pGPIOx;	// This holds the base address of the GPIO Port to which the pin belongs to
 	GPIO_PinConfig_t GPIO_PinConfig;
 } GPIO_Handle_t;
-
-
-/**
- * @GPIO_PIN_NUMBERS
- * 
- */
-#define GPIO_PIN_NO_0		0	
-#define GPIO_PIN_NO_1		1
-#define GPIO_PIN_NO_2		2	
-#define GPIO_PIN_NO_3		3	
-#define GPIO_PIN_NO_4		4	
-#define GPIO_PIN_NO_5		5	
-#define GPIO_PIN_NO_6		6	
-#define GPIO_PIN_NO_7		7	
-#define GPIO_PIN_NO_8		8	
-#define GPIO_PIN_NO_9		9	
-#define GPIO_PIN_NO_10		10	
-#define GPIO_PIN_NO_11		11
-#define GPIO_PIN_NO_12		12	
-#define GPIO_PIN_NO_13		13	
-#define GPIO_PIN_NO_14		14	
-#define GPIO_PIN_NO_15		15
-
-/** @GPIO_PIN_MODES 
- * GPIO Input Possible Modes
- * 
- */
-#define GPIO_MODE_IN		0
-#define GPIO_MODE_OUT		1
-#define GPIO_MODE_ALTFN		2
-#define GPIO_MODE_ANALOG	3
-#define GPIO_MODE_IT_FT		4 // Interrupt - Falling Trigger
-#define GPIO_MODE_IT_RT		5 // Interrupt - Rising Trigger
-#define GPIO_MODE_IT_RFT	6 // Interrupt - Rising & Falling Trigger
-
-/** @GPIO_OUTPUT_MODES
- * GPIO Output Possible Modes
- */
-
-#define GPIO_OP_TYPE_PP		0 // Push-Pull Type
-#define GPIO_OP_TYPE_OD		1 // Open-Drain Type
-
-/** @GPIO_OUTPUT_SPEEDS
- *	GPIO Pin Possible Output Speeds
- */
-#define GPIO_SPEED_LOW		0
-#define GPIO_SPEED_MEDIUM	1
-#define GPIO_SPEED_FAST		2
-#define GPIO_SPEED_HIGH		3
-
-/** @GPIO_PUPD_MODES
- *	GPIO Pin Pull-Up and Pull-Down Configuration Macros 
- */
-#define GPIO_NO_PUPD		0 // No Pull-Up or Pull-Down
-#define GPIO_PIN_PU			1 // Pull-Up
-#define GPIO_PIN_PD			2 // Pull-Down
 
 /*************************************************** Function Prototypes ***************************************/
 
@@ -118,6 +124,6 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
  */
 void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnOrDI);
 void GPIO_IRQHandling(uint8_t pinNumber);
-
+uint8_t getPortCode(GPIO_RegDef_t* pGPIOx);
 
 #endif /* INC_STM32F429_GPIO_DRIVER_H_ */
