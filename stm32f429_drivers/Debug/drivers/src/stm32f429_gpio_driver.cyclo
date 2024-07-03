@@ -6,4 +6,7 @@
 ../drivers/src/stm32f429_gpio_driver.c:247:6:GPIO_WriteToOutputPin	2
 ../drivers/src/stm32f429_gpio_driver.c:263:6:GPIO_WriteToOutputPort	1
 ../drivers/src/stm32f429_gpio_driver.c:274:6:GPIO_ToggleOutputPin	1
-../drivers/src/stm32f429_gpio_driver.c:322:9:getPortCode	12
+../drivers/src/stm32f429_gpio_driver.c:305:6:GPIO_IRQInteruptConfig	13
+../drivers/src/stm32f429_gpio_driver.c:326:6:GPIO_IRQPriorityConfig	1
+../drivers/src/stm32f429_gpio_driver.c:338:6:GPIO_IRQHandling	2
+../drivers/src/stm32f429_gpio_driver.c:354:9:getPortCode	12

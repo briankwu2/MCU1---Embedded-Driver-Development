@@ -302,15 +302,47 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber) {
  * @param IRQPriority 
  * @param EnOrDI Enable or Disable
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnOrDI);
+void GPIO_IRQInteruptConfig(uint8_t IRQNumber, uint8_t EnOrDI) {
+    if (EnOrDI == ENABLE) {
+        if (IRQNumber >= 0 && IRQNumber < 31) {
+            *NVIC_ISER0 |= (1 << IRQNumber);
+        } if (IRQNumber >= 32 && IRQNumber < 63) {
+            *NVIC_ISER1 |= (1 << (IRQNumber % 32));
+        } if (IRQNumber >= 64 && IRQNumber < 95) {
+            *NVIC_ISER2 |= (1 << (IRQNumber % 32));
+        }
+        
+    } else if (EnOrDI == DISABLE) {
+        if (IRQNumber >= 0 && IRQNumber < 31) {
+            *NVIC_ICER0 |= (1 << IRQNumber);
+        } if (IRQNumber >= 32 && IRQNumber < 63) {
+            *NVIC_ICER1 |= (1 << (IRQNumber % 32));
+        } if (IRQNumber >= 64 && IRQNumber < 95) {
+            *NVIC_ICER2 |= (1 << (IRQNumber % 32));
+        }
+    }
+}
 
+void GPIO_IRQPriorityConfig(uint32_t IRQNumber, uint32_t IRQPriority) {
+    uint8_t IPRx = IRQNumber / 4;  // Interupt Priority Register index, where x is the index
+    uint8_t IPROffset = ((IRQNumber % 4) * 8) + (8 - NO_PR_BITS_IMPLEMENTED) ; // The bit offset for the Interupt Priority Register
+
+    *(NVIC_PR_BASE_ADDR + IPRx) = (IRQPriority << IPROffset);
+}
 
 /**
  * @brief Specifies 
  * 
  * @param pinNumber 
  */
-void GPIO_IRQHandling(uint8_t pinNumber);
+void GPIO_IRQHandling(uint8_t pinNumber) {
+    // Clears the EXTI Pending Register corresponding to the pin number
+    if(EXTI->PR & (1 << pinNumber)) {
+
+        EXTI->PR |= (1 << pinNumber); // Clear by setting 1
+
+    }
+}
 
 
 

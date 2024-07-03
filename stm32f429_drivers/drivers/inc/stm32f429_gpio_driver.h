@@ -122,7 +122,8 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t pinNumber);
 /*
  *	IRQ Config and ISR Handling
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnOrDI);
+void GPIO_IRQInteruptConfig(uint8_t IRQNumber, uint8_t EnOrDI); 
+void GPIO_IRQPriorityConfig(uint32_t IRQNumber, uint32_t IRQPriority); 
 void GPIO_IRQHandling(uint8_t pinNumber);
 uint8_t getPortCode(GPIO_RegDef_t* pGPIOx);
 

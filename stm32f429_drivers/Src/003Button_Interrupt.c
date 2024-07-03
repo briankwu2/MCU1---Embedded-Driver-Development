@@ -36,7 +36,7 @@
         GPIO_Handle_t gpio_button;
         gpio_button.pGPIOx = GPIOC;
         gpio_button.GPIO_PinConfig.GPIO_pinNumber = EXTERNAL_BUTTON;
-        gpio_button.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IN;
+        gpio_button.GPIO_PinConfig.GPIO_PinMode = GPIO_MODE_IT_FT;
         gpio_button.GPIO_PinConfig.GPIO_PinSpeed = GPIO_SPEED_FAST;
         gpio_button.GPIO_PinConfig.GPIO_PinOPType = GPIO_OP_TYPE_OD;
         gpio_button.GPIO_PinConfig.GPIO_PinPuPdControl = GPIO_PIN_PU; // Activates Pull-Up Resistor
@@ -47,16 +47,22 @@
         GPIO_Init(&gpio_led_red);
         GPIO_Init(&gpio_button);
 
-        while (1) {
-            if (GPIO_ReadFromInputPin(GPIOC, EXTERNAL_BUTTON) == 0) {
-                GPIO_ToggleOutputPin(GPIOA, EXTERNAL_LED);
-                delay();
-            } 
-        }
+        // IRQ Configurations
+        GPIO_IRQPriorityConfig(IRQ_NO_EXTI4, NVIC_IRQ_PRI15);
+        GPIO_IRQInteruptConfig(IRQ_NO_EXTI4, ENABLE);
 
+        while (1);
 
         return 0;
 
     }
 #endif
+
+void EXTI4_IRQHandler(void) {
+    GPIO_IRQHandling(EXTERNAL_BUTTON); // Requires pin number
+    GPIO_ToggleOutputPin(GPIOA, EXTERNAL_LED);
+    delay(); // For debouncing
+}
+
+
 

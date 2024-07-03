@@ -13,7 +13,28 @@
 
 #include <stdint.h> // For int sizes
 
+/*********************************START: Processor Specific Details ***************************/
+
+
+/**
+ * 
+ * ARM Cortex M-4 Processor NVIC ISERx Register Addresess
+ * Only need ISER0-ISER2 as there exist IRQs from 0-90 in the STM32F42X controllers
+ */
+
+#define NVIC_ISER0		((__vo uint32_t*) 0xE000E100)
+#define NVIC_ISER1		((__vo uint32_t*) 0xE000E104)
+#define NVIC_ISER2		((__vo uint32_t*) 0xE000E108)
+
+#define NVIC_ICER0		((__vo uint32_t*) 0xE000E180)
+#define NVIC_ICER1		((__vo uint32_t*) 0xE000E184)
+#define NVIC_ICER2		((__vo uint32_t*) 0xE000E188)
+
+#define NVIC_PR_BASE_ADDR ((__vo uint32_t*) 0xE000E400) 
+#define NO_PR_BITS_IMPLEMENTED		4
+
 /*
+
  * Size of SRAM and Flash for STM32F429XX
  */
 
@@ -185,6 +206,7 @@ typedef struct {
 #define EXTI				((EXTI_RegDef_t*) EXTI_BASE_ADDR)
 #define SYSCFG 				((SYSCFG_RegDef_t*) SYSCFG_BASE_ADDR)
 
+/********************************** Macros *********************************/
 /*
  * Clock Enable Macros for GPIOx Peripherals
  */
@@ -280,6 +302,8 @@ typedef struct {
 #define GPIOJ_REG_RESET()			do{(RCC->AHB1RSTR |= (1 << 9)); (RCC->AHB1RSTR &= ~(1 << 9)); } while(0)
 #define GPIOK_REG_RESET()			do{(RCC->AHB1RSTR |= (1 << 10)); (RCC->AHB1RSTR &= ~(1 << 10)); } while(0)
 
+
+/***********************************/
 // Generic Macros
 
 #define ENABLE 			1
@@ -290,3 +314,15 @@ typedef struct {
 #define GPIO_PIN_RESET	RESET
 
 
+// IRQ Numbers for EXTI Interrupts
+#define IRQ_NO_EXTI0		6
+#define IRQ_NO_EXTI1		7
+#define IRQ_NO_EXTI2		8
+#define IRQ_NO_EXTI3		9
+#define IRQ_NO_EXTI4		10
+#define IRQ_NO_EXTI9_5		23	
+#define IRQ_NO_EXTI15_10	40		
+
+// Rest will be filled if needed, but this is for example
+#define NVIC_IRQ_PRI0	0
+#define NVIC_IRQ_PRI15	15	
