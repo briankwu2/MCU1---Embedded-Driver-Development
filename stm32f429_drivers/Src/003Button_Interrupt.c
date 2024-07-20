@@ -1,5 +1,5 @@
 #include "stm32f429_gpio_driver.h"
-#define ENABLE_COMPILATION 1     // Change to 1 and other "main" files to compile this one
+#define ENABLE_COMPILATION 0     // Change to 1 and other "main" files to compile this one
 
 /**
  *  Brief Wiring Explanation:
@@ -56,13 +56,15 @@
         return 0;
 
     }
+
+    void EXTI4_IRQHandler(void) {
+		GPIO_IRQHandling(EXTERNAL_BUTTON); // Requires pin number
+		GPIO_ToggleOutputPin(GPIOA, EXTERNAL_LED);
+		delay(); // For debouncing
+    }
 #endif
 
-void EXTI4_IRQHandler(void) {
-    GPIO_IRQHandling(EXTERNAL_BUTTON); // Requires pin number
-    GPIO_ToggleOutputPin(GPIOA, EXTERNAL_LED);
-    delay(); // For debouncing
-}
+
 
 
 

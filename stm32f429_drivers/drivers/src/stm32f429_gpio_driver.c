@@ -83,6 +83,9 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
     uint32_t pinNumber = pGPIOHandle->GPIO_PinConfig.GPIO_pinNumber;
     GPIO_PIN_MODE pinMode = pGPIOHandle->GPIO_PinConfig.GPIO_PinMode;
 
+
+    // Enable the Peripheral Clock
+    GPIO_PeriClockControl(pGPIOHandle->pGPIOx, ENABLE);
     // Non-Interrupt Modes
     if (pinMode <= GPIO_MODE_ANALOG) {
 
@@ -183,27 +186,27 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle) {
  */
 void GPIO_DeInit(GPIO_RegDef_t *pGPIOx) {
     if (pGPIOx == GPIOA) {
-        GPIOA_P_CLK_EN();
+        GPIOA_REG_RESET();
     } else if (pGPIOx == GPIOB) {
-        GPIOB_P_CLK_EN();
+        GPIOB_REG_RESET();
     } else if (pGPIOx == GPIOC) {
-        GPIOC_P_CLK_EN();
+        GPIOC_REG_RESET();
     } else if (pGPIOx == GPIOD) {
-        GPIOD_P_CLK_EN();
+        GPIOD_REG_RESET();
     } else if (pGPIOx == GPIOE) {
-        GPIOE_P_CLK_EN();
+        GPIOE_REG_RESET();
     } else if (pGPIOx == GPIOF) {
-        GPIOF_P_CLK_EN();
+        GPIOF_REG_RESET();
     } else if (pGPIOx == GPIOG) {
-        GPIOG_P_CLK_EN();
+        GPIOG_REG_RESET();
     } else if (pGPIOx == GPIOH) {
-        GPIOH_P_CLK_EN();
+        GPIOH_REG_RESET();
     } else if (pGPIOx == GPIOI) {
-        GPIOI_P_CLK_EN();
+        GPIOI_REG_RESET();
     } else if (pGPIOx == GPIOJ) {
-        GPIOJ_P_CLK_EN();
+        GPIOJ_REG_RESET();
     } else if (pGPIOx == GPIOK) {
-        GPIOK_P_CLK_EN();
+        GPIOK_REG_RESET();
     }
 }
 

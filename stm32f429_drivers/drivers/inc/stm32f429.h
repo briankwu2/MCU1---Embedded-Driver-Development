@@ -186,8 +186,21 @@ typedef struct {
 	__vo uint32_t CMPCR;		// Compensation Cell Control Register	Addr Offset: 0x0C
 } SYSCFG_RegDef_t;
 
+
+typedef struct {
+	__vo uint32_t CR1;
+	__vo uint32_t CR2;
+	__vo uint32_t SR;
+	__vo uint32_t DR;
+	__vo uint32_t CRCPR;
+	__vo uint32_t TXCRCR;
+	__vo uint32_t I2SCFGR;
+	__vo uint32_t I2SPR;
+} SPI_RegDef_t;
+
+
 /*
- * Peripheral Definitions 	(Peripheral Base Addresses typecasted to xxx_RegDef_t)
+ * GPIO Base Addresses (Peripheral Base Addresses typecasted to xxx_RegDef_t)
  */
 
 #define GPIOA				((GPIO_RegDef_t *) GPIOA_BASE_ADDR)
@@ -202,6 +215,18 @@ typedef struct {
 #define GPIOJ				((GPIO_RegDef_t *) GPIOJ_BASE_ADDR)
 #define GPIOK				((GPIO_RegDef_t *) GPIOK_BASE_ADDR)
 
+
+
+/**
+ *	SPI Register Base Addresses
+ */
+#define SPI1	((SPI_RegDef_t *) SPI1_BASE_ADDR)
+#define SPI2	((SPI_RegDef_t *) SPI2_BASE_ADDR)
+#define SPI3	((SPI_RegDef_t *) SPI3_BASE_ADDR)
+
+/**
+ * Configuration Register Base Addresses
+ */
 #define RCC					((RCC_RegDef_t *) RCC_BASE_ADDR)
 #define EXTI				((EXTI_RegDef_t*) EXTI_BASE_ADDR)
 #define SYSCFG 				((SYSCFG_RegDef_t*) SYSCFG_BASE_ADDR)
@@ -234,6 +259,7 @@ typedef struct {
 /*
  * Clock Enable Macros for SPIx Peripherals
  */
+#define SPI1_P_CLK_EN()			(RCC->APB2ENR) |= (1 << 12)
 #define SPI2_P_CLK_EN()			(RCC->APB1ENR) |= (1 << 14)
 #define SPI3_P_CLK_EN()			(RCC->APB1ENR) |= (1 << 15)
 
@@ -273,6 +299,7 @@ typedef struct {
 /*
  * Clock Disable Macros for SPIx Peripherals
  */
+#define SPI1_P_CLK_DI()			(RCC->APB2ENR) &= ~(1 << 12)
 #define SPI2_P_CLK_DI()			(RCC->APB1ENR) &= ~(1 << 14)
 #define SPI3_P_CLK_DI()			(RCC->APB1ENR) &= ~(1 << 15)
 
@@ -287,6 +314,8 @@ typedef struct {
 #define SYSCFG_P_CLK_DI()			(RCC->APB2ENR) &= ~(1 << 14)
 #endif /* INC_STM32F429_H_ */
 
+
+/****************************************** RESET MACROS ***************************************** */
 /*
  * Macros to reset GPIOx Peripherals
  */
@@ -303,6 +332,15 @@ typedef struct {
 #define GPIOK_REG_RESET()			do{(RCC->AHB1RSTR |= (1 << 10)); (RCC->AHB1RSTR &= ~(1 << 10)); } while(0)
 
 
+
+/**
+ * Macros to reset SPI Peripherals 
+ * 
+ */
+
+#define SPI1_REG_RESET()			do{(RCC->APB2RSTR |= (1 << 12)); (RCC->APB2RSTR &= ~(1 << 12)); } while(0)
+#define SPI2_REG_RESET()			do{(RCC->APB1RSTR |= (1 << 14)); (RCC->APB1RSTR &= ~(1 << 14)); } while(0)
+#define SPI3_REG_RESET()			do{(RCC->APB1RSTR |= (1 << 15)); (RCC->APB1RSTR &= ~(1 << 15)); } while(0)
 /***********************************/
 // Generic Macros
 
@@ -312,6 +350,8 @@ typedef struct {
 #define RESET			DISABLE
 #define GPIO_PIN_SET	SET
 #define GPIO_PIN_RESET	RESET
+#define FLAG_SET        SET
+#define FLAG_RESET      RESET 
 
 
 // IRQ Numbers for EXTI Interrupts
@@ -322,7 +362,55 @@ typedef struct {
 #define IRQ_NO_EXTI4		10
 #define IRQ_NO_EXTI9_5		23	
 #define IRQ_NO_EXTI15_10	40		
+#define IRQ_NO_SPI1			35
+#define IRQ_NO_SPI2			36
+#define IRQ_NO_SPI3			51
 
 // Rest will be filled if needed, but this is for example
 #define NVIC_IRQ_PRI0	0
 #define NVIC_IRQ_PRI15	15	
+
+
+/*********************************
+ * Bit Positions 
+ *********************************/
+
+/*********************************
+ * SPI Peripheral
+ *********************************/
+
+// SPI_CR1 Register Bit Positions
+#define SPI_CR1_CPHA		0   // Clock Phase
+#define SPI_CR1_CPOL		1   // Clock Polarity
+#define SPI_CR1_MSTR		2 	// Master Selection
+#define SPI_CR1_BR			3	// Baud Rate Control
+#define SPI_CR1_SPE			6   // SPI Enable
+#define SPI_CR1_LSB			7   // Frame Format
+#define SPI_CR1_SSI			8   // Internal Slave Select
+#define SPI_CR1_SSM			9   // Software Slave Management
+#define SPI_CR1_RX_ONLY 	10  // Receive Only
+#define SPI_CR1_DFF			11  // Data Frame Format
+#define SPI_CR1_CRC_NEXT	12  // CRC Transfer Next
+#define SPI_CR1_CRC_EN		13  // Hardware CRC Calculation Enable
+#define SPI_CR1_BIDI_OE		14  // Output Enable in Bi-directional Mode
+#define SPI_CR1_BIDI_MODE	15  // Bi-directional Data Mode Enable
+
+// SPI_CR2 Register Bit Positions
+#define SPI_CR2_RXDMAEN		0   // RX Buffer DMA Enable
+#define SPI_CR2_TXDMAEN		1   // TX Buffer DMA Enable 
+#define SPI_CR2_SSOE		2 	// SS Output Enable 
+#define SPI_CR2_FRF			4   // Frame Format
+#define SPI_CR2_ERRIE		5   // Error Interrupt Enable
+#define SPI_CR2_RXNEIE		6   // RX Buffer Not Empty Interrupt Enable 
+#define SPI_CR2_TXEIE		7   // TX Buffer Empty Interrupt Enable
+
+// SPI_SR Regster Bit Positions
+#define SPI_SR_RXNE		    0   // Receive Buffer Not Empty
+#define SPI_SR_TXE 		    1   // Transmit Buffer Empty
+#define SPI_SR_CHSIDE		2 	// Channel Side
+#define SPI_SR_UDR			3	// Underrun Flag
+#define SPI_SR_CRC_ERR		4   // CRC Error Flag
+#define SPI_SR_MODF		    5   // Mode Fault
+#define SPI_SR_OVR			6   // Overrun Flag
+#define SPI_SR_BSY			7   // Busy Flag
+#define SPI_SR_FRE 	        8   // Frame Format Error Flag

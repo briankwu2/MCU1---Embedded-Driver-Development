@@ -10,6 +10,7 @@ C_SRCS += \
 ../Src/001-3LED_Toggle.c \
 ../Src/002External_Button.c \
 ../Src/003Button_Interrupt.c \
+../Src/005SPI_Send.c \
 ../Src/syscalls.c \
 ../Src/sysmem.c 
 
@@ -19,6 +20,7 @@ OBJS += \
 ./Src/001-3LED_Toggle.o \
 ./Src/002External_Button.o \
 ./Src/003Button_Interrupt.o \
+./Src/005SPI_Send.o \
 ./Src/syscalls.o \
 ./Src/sysmem.o 
 
@@ -28,6 +30,7 @@ C_DEPS += \
 ./Src/001-3LED_Toggle.d \
 ./Src/002External_Button.d \
 ./Src/003Button_Interrupt.d \
+./Src/005SPI_Send.d \
 ./Src/syscalls.d \
 ./Src/sysmem.d 
 
@@ -39,7 +42,7 @@ Src/%.o Src/%.su Src/%.cyclo: ../Src/%.c Src/subdir.mk
 clean: clean-Src
 
 clean-Src:
-	-$(RM) ./Src/001-1LED_Toggle.cyclo ./Src/001-1LED_Toggle.d ./Src/001-1LED_Toggle.o ./Src/001-1LED_Toggle.su ./Src/001-2LED_Toggle.cyclo ./Src/001-2LED_Toggle.d ./Src/001-2LED_Toggle.o ./Src/001-2LED_Toggle.su ./Src/001-3LED_Toggle.cyclo ./Src/001-3LED_Toggle.d ./Src/001-3LED_Toggle.o ./Src/001-3LED_Toggle.su ./Src/002External_Button.cyclo ./Src/002External_Button.d ./Src/002External_Button.o ./Src/002External_Button.su ./Src/003Button_Interrupt.cyclo ./Src/003Button_Interrupt.d ./Src/003Button_Interrupt.o ./Src/003Button_Interrupt.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
+	-$(RM) ./Src/001-1LED_Toggle.cyclo ./Src/001-1LED_Toggle.d ./Src/001-1LED_Toggle.o ./Src/001-1LED_Toggle.su ./Src/001-2LED_Toggle.cyclo ./Src/001-2LED_Toggle.d ./Src/001-2LED_Toggle.o ./Src/001-2LED_Toggle.su ./Src/001-3LED_Toggle.cyclo ./Src/001-3LED_Toggle.d ./Src/001-3LED_Toggle.o ./Src/001-3LED_Toggle.su ./Src/002External_Button.cyclo ./Src/002External_Button.d ./Src/002External_Button.o ./Src/002External_Button.su ./Src/003Button_Interrupt.cyclo ./Src/003Button_Interrupt.d ./Src/003Button_Interrupt.o ./Src/003Button_Interrupt.su ./Src/005SPI_Send.cyclo ./Src/005SPI_Send.d ./Src/005SPI_Send.o ./Src/005SPI_Send.su ./Src/syscalls.cyclo ./Src/syscalls.d ./Src/syscalls.o ./Src/syscalls.su ./Src/sysmem.cyclo ./Src/sysmem.d ./Src/sysmem.o ./Src/sysmem.su
 
 .PHONY: clean-Src
 
