@@ -12,7 +12,11 @@
 #define INC_STM32F429_H_
 
 #include <stdint.h> // For int sizes
+#include <stddef.h>
 
+// Shorthand macros
+#define __vo volatile // volatile shorthand
+#define __weak __attribute__((weak))
 /*********************************START: Processor Specific Details ***************************/
 
 
@@ -112,7 +116,6 @@
 /****************************************** Peripheral Register Struct Definitions **********************************/
 
 
-#define __vo volatile // volatile shorthand
 
 /**
  * RCC Peripheral Register Struct
